@@ -1,0 +1,180 @@
+/* :root{ */
+.RockPaperScissorsMain{
+    background-image: url('../../assets/RPS-game images/background-fight.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 95vh; /* Full height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 5%;
+  align-items: wrap;
+  position: relative;
+}
+.board-game-PRS {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: space-evenly;
+    width: 100%;
+    height: 100%;
+}
+@keyframes fadeChatApp {
+	0% { opacity: 0; transform: translateY(1rem); }
+	100% { opacity: 1; transform: translateY(0px); }
+}
+
+.board-game-PRS img{
+    max-width: 20vw;
+    animation: fadeChatApp 0.3s ease-in-out;
+    animation-fill-mode: forwards;
+  
+}
+.cs-player{
+    position: absolute;
+    bottom: 10%;
+}
+
+.again-button{
+  border: none;
+  padding: 0.5rem;
+  background-color: transparent;
+  border-radius: 0.9rem;
+  font-size: 3rem;
+  text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: text-shadow 0.4s;
+  background-color: #6bd171;
+  opacity: 0.9;
+  /* width: 150px; */
+  width: auto;
+  height: auto;
+  transition: all 0.2s;
+  cursor: pointer;
+box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.25),
+  inset -4px -4px 8px 0 rgba(0, 0, 0, 0.25),
+  inset 4px 4px 8px 0 rgba(255, 255, 255, 0.4);
+
+&:before {
+  display: inline-flex;
+  content: attr(data-image);
+}
+
+&:hover {
+  transform: scale(1.1);
+}
+
+}
+button:focus,
+button:focus-visible {
+outline: 4px auto -webkit-focus-ring-color;
+}
+
+
+
+.cs-hand {
+    border: none;
+    padding: 1.5rem;
+    background-color: transparent;
+    border-radius: 0.9rem;
+    font-size: 3rem;
+    text-shadow: -2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: text-shadow 0.4s;
+    background-color: #c4af7a;
+    opacity: 0.9;
+    /* width: 150px; */
+    width: auto;
+    height: 150px;
+    margin-right: 12px;
+    margin-top: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #333, 2px 2px 4px #333, 2px -2px 0 #333,
+    -2px 2px 0 #333, -2px -2px 0 #333, 2px 0px 0 #333, 0px 2px 0 #333,
+    -2px 0px 0 #333, 0px -4px 0 #333;
+
+  box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.25),
+    inset -4px -4px 8px 0 rgba(0, 0, 0, 0.25),
+    inset 4px 4px 8px 0 rgba(255, 255, 255, 0.4);
+
+  &:before {
+    display: inline-flex;
+    content: attr(data-image);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+}
+  button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.spinner {
+  animation: rotator 1.4s linear infinite;
+  transform: scale(2);
+
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash 1.4s ease-in-out infinite, 
+    colors 5.6s ease-in-out infinite;
+}
+
+@keyframes colors {
+  0% { stroke: #4285F4; }
+  25% { stroke: #DE3E35; }
+  50% { stroke: #F7C223; }
+  75% { stroke: #1B9A59; }
+  100% { stroke: #4285F4; }
+}
+
+@keyframes dash {
+ 0% { stroke-dashoffset: 187; }
+ 50% {
+   stroke-dashoffset: 46.75;
+   transform:rotate(135deg);
+ }
+ 100% {
+   stroke-dashoffset: 187;
+   transform:rotate(450deg);
+ }
+}
+/* .game-winning-image { */
+.gameResult{
+  position: fixed;
+  top: 15%;
+  left: 40%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 100vw;
+  /* height: 100vh; */
+  /* background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center; */
+  z-index: 1000;
+  animation: popUpResize 1s forwards;
+}
+
+@keyframes popUpResize {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+}
+
+
