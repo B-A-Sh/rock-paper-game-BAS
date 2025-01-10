@@ -7,7 +7,7 @@ import RockPaperScissorsMain from './pages/RockPaperScissors/RockPaperScissorsMa
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
-    <RockPaperScissorsMain gameMode="single" ></RockPaperScissorsMain>
-    {/* <RockPaperScissorsMain gameMode="multi" ></RockPaperScissorsMain> */}
+    {/* <RockPaperScissorsMain gameMode="single" ></RockPaperScissorsMain> */}
+    <RockPaperScissorsMain gameMode="multi" ></RockPaperScissorsMain>
   </StrictMode>,
 )

@@ -16,17 +16,26 @@ const RockPaperScissorsMain = ({gameMode}) => {
     const [enemyHand, setEnemyHand] = useState(0)
     const [isWaiting, setIsWaiting] = useState(true)  
     const [reloaderIndicator, setReloadIndicator] = useState(0) 
-    const [gameOver, setGameOver] = useState(false)
-    const [victory, setVictory] = useState(0)
+    // const [gameOver, setGameOver] = useState(false)
+    const [gameOver, setGameOver] = useState()
+    const [victory, setVictory] = useState(1)
     useEffect(() => {
-        socket.on('enemyHand', (hand)=>{
-            if(gameOver===false){
-                setEnemyHand(hand);
-                setIsWaiting(false);
-                screenWinner(playerHand, enemyHand)
-            }
-        })
-        if(reloaderIndicator >0){
+        if(gameMode==='multi'){
+            
+            socket.on('enemyHand', (hand)=>{
+                // alert("the other player has chosen")
+                console.log('in the socket before the if statement, gameover',gameOver)
+                if(!gameOver){
+                    console.log('inside the enemyHand event listener',gameOver)
+                    setEnemyHand(hand);
+                    setIsWaiting(false);
+                    screenWinner(playerHand, enemyHand)
+                    setGameOver(true)
+                }
+            })
+        }
+
+        if(reloaderIndicator >0 && gameOver){
             // console.log('if condition screen wining func invoked');
             screenWinner(playerHand, enemyHand)
         }
@@ -38,12 +47,10 @@ const RockPaperScissorsMain = ({gameMode}) => {
 
     // async function screenWinner(playerHand, enemyHand){
     const screenWinner = (playerHand, enemyHand)=>{
-        // console.log('screen wining func invoked');
-        // console.log('player hand'+playerHand);
-        // console.log('enemy hand'+ enemyHand);
+
         if(playerHand===enemyHand){
             console.log('tie');
-            setVictory(3)
+            setVictory(0)
         }else if(playerHand==0 && enemyHand==2){
             setVictory(1)
         }else if(playerHand==0 && enemyHand==1){
@@ -57,6 +64,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
         }else if(playerHand==2 && enemyHand==0){
             setVictory(2)
         }
+        console.log(`from the main screen this is the victory ${victory}`);
         setGameOver(true)
     }
     const clickHandler = (e)=>{
@@ -76,19 +84,21 @@ const RockPaperScissorsMain = ({gameMode}) => {
     }
     const playAgainClickHandler = ()=>{
         setPlayerHand(0)
-        setEnemyHand(0)
+        if(gameMode==='multi'){
+            setIsWaiting(true)
+        }else{
+            setEnemyHand(0)
+        }
         setGameOver(false)
     }
-
-
   
     return (
     <div className='RockPaperScissorsMain'>
         <div className='board-game-PRS'>
             {gameMode==='multi'&& isWaiting? 
-            <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-            </svg>:
+            <div>
+                <h1>Waiting for the other player to choose</h1>
+            </div>:
             <div>
                 <img src={enemyHands[enemyHand]} alt="enemyHand" />
             </div>}
