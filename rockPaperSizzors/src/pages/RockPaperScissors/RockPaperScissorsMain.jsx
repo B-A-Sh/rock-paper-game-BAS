@@ -16,17 +16,18 @@ const RockPaperScissorsMain = ({gameMode}) => {
     const [enemyHand, setEnemyHand] = useState(0)
     const [isWaiting, setIsWaiting] = useState(true)  
     const [reloaderIndicator, setReloadIndicator] = useState(0) 
-    // const [gameOver, setGameOver] = useState(false)
     const [gameOver, setGameOver] = useState()
     const [victory, setVictory] = useState()
+    const [currentUserId, setCurrentUserId] = useState(Date.now())  
+
     useEffect(() => {
         if(gameMode==='multi'){
             
             socket.on('enemyHand', (hand)=>{
                 // alert("the other player has chosen")
-                console.log('in the socket before the if statement, gameover',gameOver)
+                // console.log('in the socket before the if statement, gameover',gameOver)
                 if(!gameOver){
-                    console.log('inside the enemyHand event listener',gameOver)
+                    // console.log('inside the enemyHand event listener',gameOver)
                     setEnemyHand(hand);
                     setIsWaiting(false);
                     screenWinner(playerHand, enemyHand)
@@ -46,27 +47,6 @@ const RockPaperScissorsMain = ({gameMode}) => {
     
 
     // async function screenWinner(playerHand, enemyHand){
-    const screenWinner = (playerHand, enemyHand)=>{
-
-        if(playerHand===enemyHand){
-            console.log('tie');
-            // setVictory(0)
-        }else if(playerHand==0 && enemyHand==2){
-            setVictory(1)
-        }else if(playerHand==0 && enemyHand==1){
-            setVictory(2)
-        }else if(playerHand==1 && enemyHand==0){
-            setVictory(1)
-        }else if(playerHand==1 && enemyHand==2){
-            setVictory(2)
-        }else if(playerHand==2 && enemyHand==1){
-            setVictory(1)
-        }else if(playerHand==2 && enemyHand==0){
-            setVictory(2)
-        }
-        console.log(`from the main screen this is the victory ${victory}`);
-        setGameOver(true)
-    }
     const clickHandler = (e)=>{
         if(e){
             setPlayerHand(e.target.dataset.hand)
@@ -77,7 +57,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
                 // setTimeout(() => {screenWinner(playerHand, enemyHand)},5);
                 setReloadIndicator(reloaderIndicator+1)
             }else if(gameMode==='multi'){
-                socket.emit('playerHand', e.target.dataset.hand)
+                socket.emit('playerHand', {userId: currentUserId, hand: e.target.dataset.hand})
                 alert("waiting for the other player to choose")
             }
         }
