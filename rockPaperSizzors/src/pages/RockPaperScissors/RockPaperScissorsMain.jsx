@@ -18,7 +18,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
     const [reloaderIndicator, setReloadIndicator] = useState(0) 
     // const [gameOver, setGameOver] = useState(false)
     const [gameOver, setGameOver] = useState()
-    const [victory, setVictory] = useState(1)
+    const [victory, setVictory] = useState()
     useEffect(() => {
         if(gameMode==='multi'){
             
@@ -50,7 +50,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
 
         if(playerHand===enemyHand){
             console.log('tie');
-            setVictory(0)
+            // setVictory(0)
         }else if(playerHand==0 && enemyHand==2){
             setVictory(1)
         }else if(playerHand==0 && enemyHand==1){
@@ -108,7 +108,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
             </div>
             <div className="cs-player">
                 {gameOver?
-                    <GameResult victory={victory} playAgainClickHandler={playAgainClickHandler} />
+                    <GameResult victoryState={victory} playAgainClickHandler={playAgainClickHandler} />
                 :
                     <OptionPanel clickHandler={clickHandler} />}
             </div>

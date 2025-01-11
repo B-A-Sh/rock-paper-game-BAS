@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 
-const GameResult = ({ victory, playAgainClickHandler }) => {
+const GameResult = ({ victoryState, playAgainClickHandler }) => {
     let result
-    console.log('victory', victory);
-    console.log(`from the game result this is the victory ${victory}`);
+    console.log('victoryState', victoryState);
+    console.log(`from the game result this is the victoryState ${victoryState}`);
     
     
-    switch (victory) {
+    switch (victoryState) {
         case 0:
             result = (
                 <>
