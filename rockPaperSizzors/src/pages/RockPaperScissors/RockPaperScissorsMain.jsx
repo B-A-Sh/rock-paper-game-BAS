@@ -3,7 +3,12 @@ import React, { useEffect, useState } from 'react'
 import './RPS-style.css'
 import { socket } from '../../utils/socket'
 import OptionPanel from './OptionPanel'
-import GameResult from './GameResult'
+//mocking staff until merging
+import chat from '../../assets/Mockedchat.js'
+// import { Context } from "../../ChatHomePage";
+
+
+// const RockPaperScissorsMain = ({gameMode,chat}) => {
 const RockPaperScissorsMain = ({gameMode}) => {
     
     const enemyHands = ['../src/assets/RPS-game images/hands-images/hand-rock-left.png',
@@ -11,42 +16,45 @@ const RockPaperScissorsMain = ({gameMode}) => {
                         '../src/assets/RPS-game images/hands-images/hand-scissors-left.png']
     const playerHands = ['../src/assets/RPS-game images/hands-images/hand-rock-right.png',
                         '../src/assets/RPS-game images/hands-images/hand-paper-right.png',
-                        '../src/assets/RPS-game images/hands-images/hand-scissors-right.png']
+                        '../src/assets/RPS-game images/hands-images/hand-scissors-right.png'] 
     const [playerHand, setPlayerHand] = useState(0)
     const [enemyHand, setEnemyHand] = useState(0)
     const [isWaiting, setIsWaiting] = useState(true)  
     const [reloaderIndicator, setReloadIndicator] = useState(0) 
+    const [disableButtons, setDisableButtons] = useState(false)
     const [gameOver, setGameOver] = useState()
     const [victory, setVictory] = useState()
+    //------- take care in merging stage
+    const roomId = chat.chatId
     const [currentUserId, setCurrentUserId] = useState(Date.now())  
+    // const currentUserObject = useContext(Context);
+    // const [currentUserId, setCurrentUserId] = useState(currentUserObject.id)  
 
     useEffect(() => {
         if(gameMode==='multi'){
-            
+            socket.emit('join-room',roomId)
+            // socket.emit('joinRoom', {roomId, userId: currentUserId})            
             socket.on('enemyHand', (hand)=>{
-                // alert("the other player has chosen")
-                // console.log('in the socket before the if statement, gameover',gameOver)
+                console.log('enemyHand',hand);
+                
                 if(!gameOver){
-                    // console.log('inside the enemyHand event listener',gameOver)
                     setEnemyHand(hand);
                     setIsWaiting(false);
-                    screenWinner(playerHand, enemyHand)
-                    setGameOver(true)
+                    // setGameOver(true)
                 }
+            })
+            socket.on('gameResult', (victory)=>{
+                setVictory(victory)
+                setGameOver(true)
             })
         }
 
-        if(reloaderIndicator >0 && gameOver){
-            // console.log('if condition screen wining func invoked');
-            screenWinner(playerHand, enemyHand)
-        }
         return () => {
-            socket.off('enemyHand')
+            // socket.off('enemyHand')
         }
-    }, [reloaderIndicator])
+    }, [socket,reloaderIndicator])
     
 
-    // async function screenWinner(playerHand, enemyHand){
     const clickHandler = (e)=>{
         if(e){
             setPlayerHand(e.target.dataset.hand)
@@ -58,7 +66,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
                 setReloadIndicator(reloaderIndicator+1)
             }else if(gameMode==='multi'){
                 socket.emit('playerHand', {userId: currentUserId, hand: e.target.dataset.hand})
-                alert("waiting for the other player to choose")
+                setDisableButtons(true)
             }
         }
     }
@@ -70,6 +78,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
             setEnemyHand(0)
         }
         setGameOver(false)
+        setDisableButtons(false)
     }
   
     return (
@@ -90,7 +99,7 @@ const RockPaperScissorsMain = ({gameMode}) => {
                 {gameOver?
                     <GameResult victoryState={victory} playAgainClickHandler={playAgainClickHandler} />
                 :
-                    <OptionPanel clickHandler={clickHandler} />}
+                    <OptionPanel clickHandler={disableButtons? null: clickHandler} />}
             </div>
         </div>
     </div>

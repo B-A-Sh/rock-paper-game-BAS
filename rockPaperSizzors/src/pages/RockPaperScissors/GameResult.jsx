@@ -11,7 +11,7 @@ const GameResult = ({ victoryState, playAgainClickHandler }) => {
         case 0:
             result = (
                 <>
-                    <h1>🤝️It's a tie🤝️</h1>
+                    <h1>🤝️Its a tie🤝️</h1>
                     <img className='gameResult' src="../src/assets/RPS-game images/score-tie.png" alt="gameResult" />
                     <button className='again-button' onClick={playAgainClickHandler}>🔄️play again🔄️</button>
                 </>

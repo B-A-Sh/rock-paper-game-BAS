@@ -8,39 +8,75 @@ const app = express();
 const server = http.createServer(app)
 const io = new Server(server,{
     cors:"*"
-}) 
-
+})
+//--------------- 
 let playerHand = 0
 let enemyHand = 0
-let isWaiting = true  
-let reloaderIndicator = 0
-let gameOver = false
 let victory = undefined
 let gameUsersAndHands = []
+let activeRooms = {}
+let roomUsers = {}
+//----------------
 
-const screenWinner = (playerHand, enemyHand)=>{
-    if(playerHand===enemyHand){
-        victory = 0
-    }else if(playerHand==0 && enemyHand==2){
-        victory = 1
-    }else if(playerHand==0 && enemyHand==1){
-        victory = 2
-    }else if(playerHand==1 && enemyHand==0){
-        victory = 1
-    }else if(playerHand==1 && enemyHand==2){
-        victory = 2
-    }else if(playerHand==2 && enemyHand==1){
-        victory = 1
-    }else if(playerHand==2 && enemyHand==0){
-        victory = 2
+// When a user joins a room
+function joinRoom(socket, room) {
+    if (roomUsers[socket.id]) {
+      if (!roomUsers[socket.id].includes(room)) {
+        roomUsers[socket.id].push(room);
+      } else {
+        console.log("User is already in room");
+      }
+    } else {
+      roomUsers[socket.id] = [room];
     }
-    console.log('victory',victory);
-    gameOver = true
+  }
+//----------------  
+
+const winningCalculationRPS = (playerOneHand, playerTwoHand)=>{
+    if(playerOneHand.hand===playerTwoHand.hand){
+        victory = 0
+    }else if(playerOneHand.hand==0 && playerTwoHand.hand==2){
+        victory = playerOneHand.userId
+    }else if(playerOneHand.hand==0 && playerTwoHand.hand==1){
+        victory = playerTwoHand.userId
+    }else if(playerOneHand.hand==1 && playerTwoHand.hand==0){
+        victory = playerOneHand.userId
+    }else if(playerOneHand.hand==1 && playerTwoHand.hand==2){
+        victory = playerTwoHand.userId
+    }else if(playerOneHand.hand==2 && playerTwoHand.hand==1){
+        victory = playerOneHand.userId
+    }else if(playerOneHand.hand==2 && playerTwoHand.hand==0){
+        victory = playerTwoHand.userId
+    }
+    console.log('victory is',victory);
 }
 
 
 io.on("connection",(socket)=>{
     console.log("user connected", socket.id);
+
+    socket.on('join-room',(room)=>{
+        socket.join(room)
+        console.log(`socket-- ${socket.id} added to RPS game room name -- ${room}`);
+        activeRooms[room] = activeRooms[room] ? activeRooms[room]+1 : 1
+        if(activeRooms[room]>2){
+            socket.leave(room)
+            activeRooms[room] = 2
+        }
+        joinRoom(socket, room)
+        // roomUsers[socket.id]? roomUsers[socket.id].push(room) : console.log("user is already in room");        
+        // roomUsers[socket.id] = room
+
+        // console.log("roomUsers",roomUsers);
+        // console.log("--------------------");
+        // console.log(roomUsers[socket.id]);
+        // console.log(roomUsers[socket.id][0]);
+        // console.log("--------------------");
+        
+        
+    })
+    
+    
     socket.on("playerHand",(hand)=>{
         console.log("player hand",hand);
         // socket.broadcast.emit("enemyHand",hand) ----{userId,hand}
@@ -48,16 +84,33 @@ io.on("connection",(socket)=>{
         if(gameUsersAndHands.length===2){
             console.log('gameUsersAndHands',gameUsersAndHands);
             gameUsersAndHands.forEach((user)=>{
+                console.log('user',user);
+                
                 if(user.userId!==hand.userId){
-                    socket.broadcast.emit("enemyHand",user.hand)
+                    console.log('send to my self');
+                    
+                    // socket.to(socket.id).emit("enemyHand",hand.hand)
+                    socket.emit("enemyHand",user.hand)
+                    // socket.to(room).emit("gameResult",victory)
+                    // io.in(roomUsers[socket.id][0]).emit("gameResult", victory)
+                }else{
+                    console.log('send to the opponent');
+                    // socket.to(`${roomUsers[socket.id][1]}`).emit("enemyHand",user.hand)
+                    
+                    socket.to("1").emit("enemyHand",user.hand)
                 }
             })
+            // winningCalculationRPS(hand,gameUsersAndHands[0])
             gameUsersAndHands = []
         }
     })
 
+
     socket.on("disconnect",()=>{
         console.log("user disconnected");
+        if (roomUsers[socket.id]) {
+            delete roomUsers[socket.id];
+          }    
     })
     
 })
