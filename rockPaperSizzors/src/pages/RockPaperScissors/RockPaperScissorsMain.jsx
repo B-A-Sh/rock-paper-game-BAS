@@ -5,6 +5,7 @@ import { socket } from '../../utils/socket'
 import OptionPanel from './OptionPanel'
 //mocking staff until merging
 import chat from '../../assets/Mockedchat.js'
+import GameResult from './gameResult.jsx'
 // import { Context } from "../../ChatHomePage";
 
 
@@ -13,12 +14,14 @@ const RockPaperScissorsMain = ({gameMode}) => {
     
     const enemyHands = ['../src/assets/RPS-game images/hands-images/hand-rock-left.png',
                         '../src/assets/RPS-game images/hands-images/hand-paper-left.png',
-                        '../src/assets/RPS-game images/hands-images/hand-scissors-left.png']
+                        '../src/assets/RPS-game images/hands-images/hand-scissors-left.png',
+                        '../src/assets/RPS-game images/question-sign.png']
     const playerHands = ['../src/assets/RPS-game images/hands-images/hand-rock-right.png',
                         '../src/assets/RPS-game images/hands-images/hand-paper-right.png',
-                        '../src/assets/RPS-game images/hands-images/hand-scissors-right.png'] 
-    const [playerHand, setPlayerHand] = useState(0)
-    const [enemyHand, setEnemyHand] = useState(0)
+                        '../src/assets/RPS-game images/hands-images/hand-scissors-right.png',
+                        '../src/assets/RPS-game images/question-sign.png'] 
+    const [playerHand, setPlayerHand] = useState(3)
+    const [enemyHand, setEnemyHand] = useState(3)
     const [isWaiting, setIsWaiting] = useState(true)  
     const [reloaderIndicator, setReloadIndicator] = useState(0) 
     const [disableButtons, setDisableButtons] = useState(false)
@@ -33,7 +36,6 @@ const RockPaperScissorsMain = ({gameMode}) => {
     useEffect(() => {
         if(gameMode==='multi'){
             socket.emit('join-room',roomId)
-            // socket.emit('joinRoom', {roomId, userId: currentUserId})            
             socket.on('enemyHand', (hand)=>{
                 console.log('enemyHand',hand);
                 
@@ -43,8 +45,24 @@ const RockPaperScissorsMain = ({gameMode}) => {
                     // setGameOver(true)
                 }
             })
+            socket.on("handsState", (hands)=>{
+                hands.forEach((user)=>{
+                    if(user.userId!==currentUserId){
+                        setEnemyHand(user.hand)
+                        setIsWaiting(false)
+                    }
+                })
+            })
             socket.on('gameResult', (victory)=>{
-                setVictory(victory)
+                if(victory===currentUserId){
+                    setVictory(1)
+                }else if(victory<1){
+                    setVictory(0)
+                }else if(victory!==currentUserId){
+                    setVictory(2)
+                }
+                console.log('victory',victory);
+                
                 setGameOver(true)
             })
         }
@@ -86,7 +104,10 @@ const RockPaperScissorsMain = ({gameMode}) => {
         <div className='board-game-PRS'>
             {gameMode==='multi'&& isWaiting? 
             <div>
-                <h1>Waiting for the other player to choose</h1>
+                <svg className="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                    <circle className="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+                </svg>
+                {/* <h1>Waiting for the other player to choose</h1> */}
             </div>:
             <div>
                 <img src={enemyHands[enemyHand]} alt="enemyHand" />

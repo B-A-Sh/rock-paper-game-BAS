@@ -11,8 +11,8 @@ const GameResult = ({ victoryState, playAgainClickHandler }) => {
         case 0:
             result = (
                 <>
+                    <img className='gameResultImage' src="../src/assets/RPS-game images/score-tie.png" alt="gameResult" />
                     <h1>🤝️Its a tie🤝️</h1>
-                    <img className='gameResult' src="../src/assets/RPS-game images/score-tie.png" alt="gameResult" />
                     <button className='again-button' onClick={playAgainClickHandler}>🔄️play again🔄️</button>
                 </>
             )
@@ -20,8 +20,8 @@ const GameResult = ({ victoryState, playAgainClickHandler }) => {
         case 1:
             result = (
                 <>
+                    <img className='gameResultImage' src="../src/assets/RPS-game images/wining-images/winner-avatar-4.png" alt="gameResult" />
                     <h1>🎉️You win🎉️</h1>
-                    <img className='gameResult' src="../src/assets/RPS-game images/wining-images/winner-avatar-4.png" alt="gameResult" />
                     <button className='again-button' onClick={playAgainClickHandler}>🔄️play again🔄️</button>
                 </>
             )
@@ -29,8 +29,8 @@ const GameResult = ({ victoryState, playAgainClickHandler }) => {
         case 2:
             result = (
                 <>
+                    <img className='gameResultImage' src="../src/assets/RPS-game images/defeat-images/defeat-4.png" alt="gameResult" />
                     <h1>😞️You lose😞️</h1>
-                    <img className='gameResult' src="../src/assets/RPS-game images/losing-images/loser-avatar-4.png" alt="gameResult" />
                     <button className='again-button' onClick={playAgainClickHandler}>🔄️play again🔄️</button>
                 </>
             )

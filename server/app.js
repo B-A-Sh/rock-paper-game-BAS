@@ -67,7 +67,7 @@ io.on("connection",(socket)=>{
         // roomUsers[socket.id]? roomUsers[socket.id].push(room) : console.log("user is already in room");        
         // roomUsers[socket.id] = room
 
-        // console.log("roomUsers",roomUsers);
+        console.log("roomUsers",roomUsers);
         // console.log("--------------------");
         // console.log(roomUsers[socket.id]);
         // console.log(roomUsers[socket.id][0]);
@@ -82,25 +82,14 @@ io.on("connection",(socket)=>{
         // socket.broadcast.emit("enemyHand",hand) ----{userId,hand}
         gameUsersAndHands.push(hand)
         if(gameUsersAndHands.length===2){
-            console.log('gameUsersAndHands',gameUsersAndHands);
-            gameUsersAndHands.forEach((user)=>{
-                console.log('user',user);
-                
-                if(user.userId!==hand.userId){
-                    console.log('send to my self');
-                    
-                    // socket.to(socket.id).emit("enemyHand",hand.hand)
-                    socket.emit("enemyHand",user.hand)
-                    // socket.to(room).emit("gameResult",victory)
-                    // io.in(roomUsers[socket.id][0]).emit("gameResult", victory)
-                }else{
-                    console.log('send to the opponent');
-                    // socket.to(`${roomUsers[socket.id][1]}`).emit("enemyHand",user.hand)
-                    
-                    socket.to("1").emit("enemyHand",user.hand)
-                }
-            })
-            // winningCalculationRPS(hand,gameUsersAndHands[0])
+            console.log("enter to the two hands if");
+            
+            // io.in(roomUsers[socket.id][0]).emit("handsState", gameUsersAndHands)
+            // io.in('1').emit("handsState", gameUsersAndHands)
+            io.emit("handsState", gameUsersAndHands)
+
+            winningCalculationRPS(hand,gameUsersAndHands[0])
+            io.emit("gameResult", victory)  
             gameUsersAndHands = []
         }
     })
